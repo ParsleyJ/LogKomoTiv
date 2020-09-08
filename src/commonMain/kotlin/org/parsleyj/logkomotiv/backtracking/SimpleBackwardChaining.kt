@@ -15,9 +15,13 @@ import org.parsleyj.logkomotiv.utils.Uniquer
  */
 
 
-fun backwardChainingAsk(kb: KnowledgeBase, goals: List<Term>): Iterable<UnificationResult> {
-    return iterate(bcAnd(kb, goals, UnificationResult.empty()))
-}
+fun backwardChainingAsk(
+    kb: KnowledgeBase,
+    goals: List<Term>,
+    prevTheta: UnificationResult = UnificationResult.empty(),
+    varNameUniquer: Uniquer<String> = Uniquer { "__gen_$it" }
+) =
+    iterate(bcAnd(kb, goals, prevTheta, varNameUniquer))
 
 
 
@@ -37,7 +41,12 @@ fun bcAnd(
         else -> {
             val first = goals[0]
             val rest = goals.subList(1, goals.size)
-            for (theta2 in iterate(bcOr(kb, first, theta, varNameUniquer))) {
+            val firstGoalbcOr = if(first is AutoUnifiable){
+                first.autoUnify(theta, varNameUniquer)
+            }else{
+                iterate(bcOr(kb, first, theta, varNameUniquer))
+            }
+            for (theta2 in firstGoalbcOr) {
                 if (!theta2.isFailure) {
                     for (theta3 in iterate(bcAnd(kb, rest, theta2, varNameUniquer))) {
                         if (!theta3.isFailure) {

@@ -52,6 +52,8 @@ open class StructImpl : Struct {
     }
 
     companion object {
-        val EMPTY: Struct = StructImpl()
+        val EMPTY: Struct = object: StructImpl(){
+            override fun toString() = "(EMPTYSTRUCT)"
+        }
     }
 }

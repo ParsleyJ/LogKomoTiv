@@ -2,6 +2,7 @@ package org.parsleyj.logkomotiv.example
 import org.parsleyj.logkomotiv.*
 import org.parsleyj.logkomotiv.nativeFacts.NativeFacts.COMMON_LIB
 import org.parsleyj.logkomotiv.backtracking.get
+import org.parsleyj.logkomotiv.nativeFacts.NativeFacts.CommonLib
 
 
 fun familyExample(){
@@ -53,14 +54,14 @@ fun familyExample(){
             "female"(V("X")),
             "parent_of"(V("F"), V("X")),
             "parent_of"(V("F"), V("Y")),
-            "!="(V("X"), V("Y")) from COMMON_LIB
+            CommonLib["!="(V("X"), V("Y"))]
         )
 
         rule["brother_of"(V("X"), V("Y"))](
             "male"(V("X")),
             "parent_of"(V("F"), V("X")),
             "parent_of"(V("F"), V("Y")),
-            "!="(V("X"), V("Y")) from COMMON_LIB
+            CommonLib["!="(V("X"), V("Y"))]
         )
 
         rule["ancestor_of"(V("X"), V("Y"))](

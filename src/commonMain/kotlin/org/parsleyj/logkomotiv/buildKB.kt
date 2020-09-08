@@ -60,6 +60,11 @@ class KnowledgeBaseBuilder {
         return NativeFactInvoker(lib.first, ANY, this@from.name, this@from.rest().toKotlinList())
     }
 
+    @KBBuildersDSL
+    fun import(lib: Pair<String, List<Term>>) {
+        importedLibs.getOrPut(lib.first) { lib.second }
+    }
+
 
     fun build(): KnowledgeBase {
         val result = KnowledgeBase()
@@ -72,6 +77,11 @@ class KnowledgeBaseBuilder {
 @KBBuildersDSL
 infix fun String.type(t: Type): Pair<String, Type> {
     return Pair(this, t)
+}
+
+@KBBuildersDSL
+infix fun Relation.from(lib: Pair<String, List<Term>>): NativeFactInvoker {
+    return NativeFactInvoker(lib.first, ANY, this@from.name, this@from.rest().toKotlinList())
 }
 
 @KBBuildersDSL
@@ -107,12 +117,27 @@ fun V(typed: Pair<String, Type>): Variable {
 }
 
 @KBBuildersDSL
+fun V(name: String, type: Type): Variable {
+    return Variable(type, name)
+}
+
+@KBBuildersDSL
+fun V(name: String, type: KClass<*>): Variable {
+    return Variable(KotlinType(type), name)
+}
+
+@KBBuildersDSL
+inline fun <reified T : Any> v(name: String): Variable {
+    return Variable(KotlinType(T::class), name)
+}
+
+@KBBuildersDSL
 fun V(): Variable {
     return Variable(ANY, placeHolderNameGenerator.next())
 }
 
 @KBBuildersDSL
-fun <T : Any> A(t: T): Atom<T> {
+fun <T : Any> a(t: T): Atom<T> {
     return Atom(t)
 }
 

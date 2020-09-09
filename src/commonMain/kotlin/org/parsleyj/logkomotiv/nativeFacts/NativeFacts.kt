@@ -101,65 +101,62 @@ object NativeFacts {
      */
     private fun generateNativeIntegerFacts(): List<Term> {
         val result: MutableList<Term> = mutList.empty()
-        //TODO
+        result += unaryOperator(
+            KotlinType.INT, "INT_LIB", "-",
+            Int::class, Int::class,
+            { a: Int -> -a }, "Unary minus"
+        )
+        result += unaryOperator(
+            KotlinType.INT, "INT_LIB", "abs",
+            Int::class,
+            Int::class,
+            { a: Int -> abs(a) }, "Integer absolute value",
+            printPrefixedForm = false
+        )
+        result += binaryOperator(
+            KotlinType.INT, "INT_LIB", "+",
+            Int::class, Int::class, Int::class,
+            { a: Int, b: Int -> a + b },
+            "Integer sum"
+        )
         result += binaryOperator(
             KotlinType.INT, "INT_LIB", "-",
             Int::class, Int::class, Int::class,
             { a: Int, b: Int -> a - b },
             "Integer subtraction"
         )
-
-//        result += unaryOperator(
-//            KotlinType.INT, "INT_LIB", "-",
-//            Int::class, Int::class,
-//            { a: Int -> -a }, "Unary minus"
-//        )
-//        result += unaryOperator(
-//            KotlinType.INT, "INT_LIB", "abs",
-//            Int::class,
-//            Int::class,
-//            { a: Int -> abs(a) }, "Integer absolute value",
-//            printPrefixedForm = false
-//        )
-//        result += binaryOperator(
-//            KotlinType.INT, "INT_LIB", "+",
-//            Int::class, Int::class, Int::class,
-//            { a: Int, b: Int -> a + b },
-//            "Integer sum"
-//        )
-        //TODO
         result += binaryOperator(
             KotlinType.INT, "INT_LIB", "*",
             Int::class, Int::class, Int::class,
             { a: Int, b: Int -> a * b },
             "Integer multiplication"
         )
-//        result += binaryOperator(
-//            KotlinType.INT, "INT_LIB", "%",
-//            Int::class, Int::class, Int::class,
-//            { a: Int, b: Int -> a % b },
-//            "Integer division remainder"
-//        )
-//        result += binaryOperator(
-//            KotlinType.INT, "INT_LIB", "/",
-//            Int::class, Int::class, Int::class,
-//            { a: Int, b: Int -> a / b },
-//            "Integer division"
-//        )
-//        result += binaryOperator(
-//            KotlinType.INT, "INT_LIB", "min",
-//            Int::class, Int::class, Int::class,
-//            { a: Int, b: Int -> min(a, b) },
-//            "Integer binary minimum value",
-//            printInfixedForm = false
-//        )
-//        result += binaryOperator(
-//            KotlinType.INT, "INT_LIB", "max",
-//            Int::class, Int::class, Int::class,
-//            { a: Int, b: Int -> max(a, b) },
-//            "Integer binary maximum value",
-//            printInfixedForm = false
-//        )
+        result += binaryOperator(
+            KotlinType.INT, "INT_LIB", "%",
+            Int::class, Int::class, Int::class,
+            { a: Int, b: Int -> a % b },
+            "Integer division remainder"
+        )
+        result += binaryOperator(
+            KotlinType.INT, "INT_LIB", "/",
+            Int::class, Int::class, Int::class,
+            { a: Int, b: Int -> a / b },
+            "Integer division"
+        )
+        result += binaryOperator(
+            KotlinType.INT, "INT_LIB", "min",
+            Int::class, Int::class, Int::class,
+            { a: Int, b: Int -> min(a, b) },
+            "Integer binary minimum value",
+            printInfixedForm = false
+        )
+        result += binaryOperator(
+            KotlinType.INT, "INT_LIB", "max",
+            Int::class, Int::class, Int::class,
+            { a: Int, b: Int -> max(a, b) },
+            "Integer binary maximum value",
+            printInfixedForm = false
+        )
         result += binaryPredicate(
             KotlinType.INT, "INT_LIB", ">",
             Int::class, Int::class,
@@ -172,18 +169,18 @@ object NativeFacts {
             { a: Int, b: Int -> a >= b },
             "Integer 'greater or equal than' comparison"
         )
-//        result += binaryPredicate(
-//            KotlinType.INT, "INT_LIB", "<",
-//            Int::class, Int::class,
-//            { a: Int, b: Int -> a < b },
-//            "Integer 'less than' comparison"
-//        )
-//        result += binaryPredicate(
-//            KotlinType.INT, "INT_LIB", "<=",
-//            Int::class, Int::class,
-//            { a: Int, b: Int -> a <= b },
-//            "Integer 'less or equal than' comparison"
-//        )
+        result += binaryPredicate(
+            KotlinType.INT, "INT_LIB", "<",
+            Int::class, Int::class,
+            { a: Int, b: Int -> a < b },
+            "Integer 'less than' comparison"
+        )
+        result += binaryPredicate(
+            KotlinType.INT, "INT_LIB", "<=",
+            Int::class, Int::class,
+            { a: Int, b: Int -> a <= b },
+            "Integer 'less or equal than' comparison"
+        )
         result += binaryGenerator(
             KotlinType.INT, "INT_LIB", "range",
             Int::class, Int::class, Int::class,

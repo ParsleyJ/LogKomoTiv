@@ -1,6 +1,5 @@
 package org.parsleyj.logkomotiv.terms
 
-import org.parsleyj.logkomotiv.terms.types.Type
 import org.parsleyj.logkomotiv.unify.Substitution
 import org.parsleyj.logkomotiv.utils.Container
 import org.parsleyj.logkomotiv.utils.Uniquer
@@ -11,14 +10,7 @@ import org.parsleyj.logkomotiv.utils.getAndIncrement
  * The unification process itself is the way to find a valid substitution of variables to make the term satisfy certain
  * properties (i.e. to be equal or "just a renaming" of another term).
  */
-class Variable(override val type: Type, val name: String) : Term {
-
-    /**
-     * Creates a variable with the specified name and type `ANY`.
-     *
-     * @param name name of the variable
-     */
-    constructor(name: String) : this(Type.ANY, name)
+class Variable(val name: String) : Term {
 
     override fun eq(y: Term): Boolean {
         return false
@@ -33,9 +25,9 @@ class Variable(override val type: Type, val name: String) : Term {
     }
 
 
-    override fun populateVarTypes(typesMap: MutableMap<String, Type>) {
-        if (!typesMap.containsKey(name)) {
-            typesMap[name] = type
+    override fun populateVarMap(varMap: MutableMap<String, Variable>) {
+        if (!varMap.containsKey(name)) {
+            varMap[name] = this
         }
     }
 

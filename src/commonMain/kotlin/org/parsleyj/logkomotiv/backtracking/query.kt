@@ -5,7 +5,6 @@ package org.parsleyj.logkomotiv.backtracking
 import org.parsleyj.kotutils.*
 import org.parsleyj.logkomotiv.KnowledgeBase
 import org.parsleyj.logkomotiv.terms.*
-import org.parsleyj.logkomotiv.terms.types.Type
 import org.parsleyj.logkomotiv.unify.Substitution
 import org.parsleyj.logkomotiv.unify.UnificationResult
 import org.parsleyj.logkomotiv.utils.Container
@@ -222,11 +221,8 @@ class Query(val knowledgeBase: KnowledgeBase, vararg val queriesArg: Term) :Term
         else -> false
     }
 
-    override val type: Type
-        get() = Type.ANY
-
-    override fun populateVarTypes(typesMap: MutableMap<String, Type>) {
-        queriesArg.forEach { it.populateVarTypes(typesMap) }
+    override fun populateVarMap(varMap: MutableMap<String, Variable>) {
+        queriesArg.forEach { it.populateVarMap(varMap) }
     }
 
     override fun extractQueryStructure(counter: Container<Int>, varPositions: MutableMap<String, MutableList<Int>>) {

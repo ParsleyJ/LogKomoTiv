@@ -1,7 +1,5 @@
 package org.parsleyj.logkomotiv.terms
 
-import org.parsleyj.logkomotiv.terms.types.KotlinType
-import org.parsleyj.logkomotiv.terms.types.Type
 import org.parsleyj.logkomotiv.utils.Container
 import org.parsleyj.logkomotiv.utils.Uniquer
 import kotlin.reflect.KClass
@@ -11,52 +9,29 @@ import kotlin.reflect.KClass
  * It does not contain variables.
  *
  * @param <T> the type of the wrapped data
+ *
+ * @constructor Creates an Atom wrapping the value `lit`. The type is the [KotlinType] extracted by using .getClass on
+ * the value.
+ *
+ * @param lit the value to be wrapped
  */
-class Atom<T:Any> : Term {
+class Atom<T:Any>(lit: T) : Term {
     /**
      * Returns the wrapped value of this Atom
      */
-    val wrappedValue: T
+    val wrappedValue: T = lit
     private val clazz: KClass<*>
-    override val type: Type
 
-    /**
-     * Creates an Atom wrapping the value `lit`. The type is the [KotlinType] extracted by using .getClass on
-     * the value.
-     *
-     * @param lit the value to be wrapped
-     */
-    constructor(lit: T) {
-        wrappedValue = lit
+    init {
         clazz = lit::class
-        type = KotlinType(clazz)
     }
 
-    /**
-     * Creates an Atom wrapping the value `lit`. The type is the [KotlinType] obtained by the `clazz`
-     * argument.
-     *
-     * @param lit   the value to be wrapped
-     * @param clazz the type used to create the [KotlinType] used as type of this Atom term.
-     */
-    constructor(lit: T, clazz: KClass<*>) {
-        wrappedValue = lit
-        this.clazz = clazz
-        type = KotlinType(clazz)
-    }
-
-    /**
-     * Returns the kotlin class of the type of this atom.
-     */
-    fun getType(): KClass<*> {
-        return clazz
-    }
 
     override fun createUniqueVarNames(uniquer: Uniquer<String>, namesMap: MutableMap<String, String>) {
         //No variables, do nothing
     }
 
-    override fun populateVarTypes(typesMap: MutableMap<String, Type>) {
+    override fun populateVarMap(varMap: MutableMap<String, Variable>) {
         //No variables, do nothing
     }
 

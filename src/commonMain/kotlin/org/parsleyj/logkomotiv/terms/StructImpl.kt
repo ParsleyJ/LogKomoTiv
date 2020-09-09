@@ -1,22 +1,18 @@
 package org.parsleyj.logkomotiv.terms
 
-import org.parsleyj.logkomotiv.terms.types.Type
 import org.parsleyj.logkomotiv.unify.Substitution
 
 /**
  * Simple implementation of [Struct].
  */
 open class StructImpl : Struct {
-    override val type: Type
     private val terms: List<Term>
 
     constructor() {
         terms = mutableListOf()
-        type = Type.ANY
     }
 
-    constructor(type: Type, terms: List<Term>) {
-        this.type = type
+    constructor(terms: List<Term>) {
         this.terms = terms
     }
 
@@ -36,7 +32,7 @@ open class StructImpl : Struct {
         }
         return if (terms.size == 1) {
             EMPTY
-        } else StructImpl(Type.ANY, ArrayList(terms.subList(1, terms.size)))
+        } else StructImpl(ArrayList(terms.subList(1, terms.size)))
     }
 
     override fun empty(): Boolean {
@@ -44,7 +40,7 @@ open class StructImpl : Struct {
     }
 
     override fun applySubstitution(subs: Substitution): Struct {
-        return StructImpl(this.type, this.terms.map { it.applySubstitution(subs) })
+        return StructImpl(this.terms.map { it.applySubstitution(subs) })
     }
 
     override fun toString(): String {

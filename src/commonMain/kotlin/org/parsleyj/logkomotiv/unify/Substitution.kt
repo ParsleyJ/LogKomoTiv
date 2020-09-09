@@ -1,7 +1,6 @@
 package org.parsleyj.logkomotiv.unify
 
 import org.parsleyj.logkomotiv.terms.Term
-import org.parsleyj.logkomotiv.terms.types.Type
 import org.parsleyj.logkomotiv.terms.Variable
 
 /**
@@ -79,12 +78,12 @@ class Substitution {
      * @return substitution cleaned of all the bindings not involved in the achievement of the goals.
      */
     fun clean(vararg goals: Term): Substitution {
-        val typeMap: MutableMap<String, Type> = mutableMapOf()
-        goals.forEach { it.populateVarTypes(typeMap) }
+        val varMap: MutableMap<String, Variable> = mutableMapOf()
+        goals.forEach { it.populateVarMap(varMap) }
         val copy = copy()
         val stringTermHashMap: HashMap<String, Term> = HashMap(copy.bindings)
         stringTermHashMap.forEach { (k: String, _) ->
-            if (!typeMap.containsKey(k)) {
+            if (!varMap.containsKey(k)) {
                 copy.bindings.remove(k)
                 copy.strongBindings.remove(k)
             }
@@ -103,16 +102,13 @@ class Substitution {
          * Creates a new substitution, where each variable is substituted with an other one with specified type and name.
          *
          * @param namesMap the map old var name -> new var name for each variable
-         * @param types    the map old var name -> new var type for each variable
          * @return the new Substitution object
          */
-        fun varNameSubstitution(namesMap: Map<String, String>, types: Map<String, Type>): Substitution {
+        fun varNameSubstitution(namesMap: Map<String, String>): Substitution {
             val substitution = Substitution()
             namesMap.forEach { (k: String?, v: String?) ->
                 substitution.put(
-                    k, Variable(
-                        types[k]?: Type.ANY, v
-                    )
+                    k, Variable(v)
                 )
             }
             return substitution

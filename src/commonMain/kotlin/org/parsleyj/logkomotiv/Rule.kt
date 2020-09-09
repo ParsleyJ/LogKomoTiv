@@ -2,7 +2,6 @@ package org.parsleyj.logkomotiv
 
 import org.parsleyj.kotutils.joinWithSeparator
 import org.parsleyj.logkomotiv.terms.Term
-import org.parsleyj.logkomotiv.terms.types.Type
 import org.parsleyj.logkomotiv.unify.Substitution
 import org.parsleyj.logkomotiv.utils.Uniquer
 
@@ -41,14 +40,11 @@ class Rule(
      */
     fun standardizeApart(uniquer: Uniquer<String>): Rule {
         val namesMap = mutableMapOf<String, String>()
-        val typesMap = mutableMapOf<String, Type>()
         for (term in premises) {
             term.createUniqueVarNames(uniquer, namesMap)
-            term.populateVarTypes(typesMap)
         }
         head.createUniqueVarNames(uniquer, namesMap)
-        head.populateVarTypes(typesMap)
-        return applySubstitution(Substitution.varNameSubstitution(namesMap, typesMap))
+        return applySubstitution(Substitution.varNameSubstitution(namesMap))
     }
 
 

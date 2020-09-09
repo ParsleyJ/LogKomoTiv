@@ -2,7 +2,6 @@ package org.parsleyj.logkomotiv.terms
 
 import org.parsleyj.kotutils.ItSingleton
 import org.parsleyj.kotutils.NonEmptyIterable
-import org.parsleyj.logkomotiv.terms.types.Type
 import org.parsleyj.logkomotiv.unify.Substitution
 import org.parsleyj.logkomotiv.unify.UnificationResult
 
@@ -24,11 +23,10 @@ open class NativeFact : RelationImpl, CustomMultiUnifiable {
      * Creates a native fact with the specified type, module name and relation name.
      */
     constructor(
-        type: Type,
         module: String,
         name: String,
         customUnification: NativeFactCustomUnificationFunction
-    ) : super(type, name) {
+    ) : super(name) {
         this.module = module
         this.customUnification = customUnification
     }
@@ -37,12 +35,11 @@ open class NativeFact : RelationImpl, CustomMultiUnifiable {
      * Creates a native fact with the specified type, module name, relation name and list of sub-terms.
      */
     constructor(
-        type: Type,
         module: String,
         name: String,
         terms: List<Term>,
         customUnification: NativeFactCustomUnificationFunction
-    ) : super(type, name, terms) {
+    ) : super(name, terms) {
         this.module = module
         this.customUnification = customUnification
     }
@@ -64,7 +61,7 @@ open class NativeFact : RelationImpl, CustomMultiUnifiable {
         for (term in terms.subList(1, terms.size)) {
             newTerms.add(term.applySubstitution(subs))
         }
-        return NativeFact(type, module, name, newTerms, customUnification)
+        return NativeFact(module, name, newTerms, customUnification)
     }
 
     companion object {

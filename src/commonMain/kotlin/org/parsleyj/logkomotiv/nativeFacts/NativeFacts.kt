@@ -2,15 +2,12 @@ package org.parsleyj.logkomotiv.nativeFacts
 
 
 import org.parsleyj.kotutils.*
-import org.parsleyj.logkomotiv.V
 import org.parsleyj.logkomotiv.knowledgeBase
 import org.parsleyj.logkomotiv.terms.*
-import org.parsleyj.logkomotiv.terms.types.KotlinType
-import org.parsleyj.logkomotiv.terms.types.Type.Companion.ANY
-import org.parsleyj.logkomotiv.type
 import org.parsleyj.logkomotiv.unify.SimpleUnify.multiUnify
 
 import org.parsleyj.logkomotiv.unify.UnificationResult
+import org.parsleyj.logkomotiv.v
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -30,11 +27,11 @@ object NativeFacts {
     private fun generateNativeCommonFacts(): List<Term> {
         val result: MutableList<Term> = mutList.empty()
         result.add(
-            NativeFact(ANY, "COMMON_LIB", "==",
-                list[V("X" type ANY), V("Y" type ANY)]
+            NativeFact("COMMON_LIB", "==",
+                list[v("X"), v("Y")]
             ) label@{ self: NativeFact, theta: UnificationResult, other: Relation ->
                 val tempTheta: UnificationResult =
-                    multiUnify(theta.copy(), StructImpl(ANY, self.toKotlinList()), other).itFirst()
+                    multiUnify(theta.copy(), StructImpl(self.toKotlinList()), other).itFirst()
                 if (tempTheta.isFailure) {
                     return@label ItSingleton(UnificationResult.FAILURE)
                 }
@@ -65,10 +62,10 @@ object NativeFacts {
             }
         )
         result.add(
-            NativeFact(ANY, "COMMON_LIB", "!=", list[V("X"), V("Y")]
+            NativeFact("COMMON_LIB", "!=", list[v("X"), v("Y")]
             ) label@{ self: NativeFact, theta: UnificationResult, other: Relation ->
                 val tempTheta: UnificationResult =
-                    multiUnify(theta.copy(), StructImpl(ANY, self.toKotlinList()), other).itFirst()
+                    multiUnify(theta.copy(), StructImpl(self.toKotlinList()), other).itFirst()
                 if (tempTheta.isFailure) {
                     return@label ItSingleton(UnificationResult.FAILURE)
                 }
@@ -102,87 +99,87 @@ object NativeFacts {
     private fun generateNativeIntegerFacts(): List<Term> {
         val result: MutableList<Term> = mutList.empty()
         result += unaryOperator(
-            KotlinType.INT, "INT_LIB", "-",
+            "INT_LIB", "-",
             Int::class, Int::class,
             { a: Int -> -a }, "Unary minus"
         )
         result += unaryOperator(
-            KotlinType.INT, "INT_LIB", "abs",
+            "INT_LIB", "abs",
             Int::class,
             Int::class,
             { a: Int -> abs(a) }, "Integer absolute value",
             printPrefixedForm = false
         )
         result += binaryOperator(
-            KotlinType.INT, "INT_LIB", "+",
+            "INT_LIB", "+",
             Int::class, Int::class, Int::class,
             { a: Int, b: Int -> a + b },
             "Integer sum"
         )
         result += binaryOperator(
-            KotlinType.INT, "INT_LIB", "-",
+            "INT_LIB", "-",
             Int::class, Int::class, Int::class,
             { a: Int, b: Int -> a - b },
             "Integer subtraction"
         )
         result += binaryOperator(
-            KotlinType.INT, "INT_LIB", "*",
+            "INT_LIB", "*",
             Int::class, Int::class, Int::class,
             { a: Int, b: Int -> a * b },
             "Integer multiplication"
         )
         result += binaryOperator(
-            KotlinType.INT, "INT_LIB", "%",
+            "INT_LIB", "%",
             Int::class, Int::class, Int::class,
             { a: Int, b: Int -> a % b },
             "Integer division remainder"
         )
         result += binaryOperator(
-            KotlinType.INT, "INT_LIB", "/",
+            "INT_LIB", "/",
             Int::class, Int::class, Int::class,
             { a: Int, b: Int -> a / b },
             "Integer division"
         )
         result += binaryOperator(
-            KotlinType.INT, "INT_LIB", "min",
+            "INT_LIB", "min",
             Int::class, Int::class, Int::class,
             { a: Int, b: Int -> min(a, b) },
             "Integer binary minimum value",
             printInfixedForm = false
         )
         result += binaryOperator(
-            KotlinType.INT, "INT_LIB", "max",
+            "INT_LIB", "max",
             Int::class, Int::class, Int::class,
             { a: Int, b: Int -> max(a, b) },
             "Integer binary maximum value",
             printInfixedForm = false
         )
         result += binaryPredicate(
-            KotlinType.INT, "INT_LIB", ">",
+            "INT_LIB", ">",
             Int::class, Int::class,
             { a: Int, b: Int -> a > b },
             "Integer 'greater than' comparison"
         )
         result += binaryPredicate(
-            KotlinType.INT, "INT_LIB", ">=",
+            "INT_LIB", ">=",
             Int::class, Int::class,
             { a: Int, b: Int -> a >= b },
             "Integer 'greater or equal than' comparison"
         )
         result += binaryPredicate(
-            KotlinType.INT, "INT_LIB", "<",
+            "INT_LIB", "<",
             Int::class, Int::class,
             { a: Int, b: Int -> a < b },
             "Integer 'less than' comparison"
         )
         result += binaryPredicate(
-            KotlinType.INT, "INT_LIB", "<=",
+            "INT_LIB", "<=",
             Int::class, Int::class,
             { a: Int, b: Int -> a <= b },
             "Integer 'less or equal than' comparison"
         )
         result += binaryGenerator(
-            KotlinType.INT, "INT_LIB", "range",
+            "INT_LIB", "range",
             Int::class, Int::class, Int::class,
             { a: Int, b: Int -> a until b},
             "Generates solutions for which the third term is unified with an integer, increasing from the first term" +

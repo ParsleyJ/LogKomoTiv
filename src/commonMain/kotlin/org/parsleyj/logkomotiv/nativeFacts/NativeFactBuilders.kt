@@ -1,10 +1,7 @@
 package org.parsleyj.logkomotiv.nativeFacts
 
 import org.parsleyj.kotutils.*
-import org.parsleyj.logkomotiv.V
 import org.parsleyj.logkomotiv.terms.*
-import org.parsleyj.logkomotiv.terms.types.Type
-import org.parsleyj.logkomotiv.type
 import org.parsleyj.logkomotiv.unify.SimpleUnify
 import org.parsleyj.logkomotiv.unify.UnificationResult
 import kotlin.reflect.KClass
@@ -12,7 +9,6 @@ import kotlin.reflect.KClass
 /**
  * Creates a native fact that represents a binary relation between two values of the specified types.
  *
- * @param type      the type of the fact
  * @param module    the module of this native fact
  * @param name      the name of the relation
  * @param t1        the (Kotlin) type of the first sub-term
@@ -23,7 +19,6 @@ import kotlin.reflect.KClass
  * @return a native fact representing a binary predicate
  */
 fun <T1 : Any, T2 : Any> binaryPredicate(
-    type: Type,
     module: String,
     name: String,
     t1: KClass<T1>,
@@ -32,10 +27,9 @@ fun <T1 : Any, T2 : Any> binaryPredicate(
     shortDescription: String = "",
     printInfixedForm: Boolean = true,
 ): NativeFact {
-    val x1Var: Variable = V("X1" type t1)
-    val x2Var: Variable = V("X2" type t2)
+    val x1Var = Variable("X1")
+    val x2Var = Variable("X2")
     return object : NativeFact(
-        type,
         module,
         name,
         list[x1Var, x2Var],
@@ -43,7 +37,7 @@ fun <T1 : Any, T2 : Any> binaryPredicate(
 
             val tempTheta: UnificationResult = SimpleUnify.multiUnify(
                 theta.copy(),
-                StructImpl(Type.ANY, self.toKotlinList()),
+                StructImpl(self.toKotlinList()),
                 other
             ).itFirst()
 
@@ -75,8 +69,8 @@ fun <T1 : Any, T2 : Any> binaryPredicate(
                 return@label ItSingleton(UnificationResult.FAILURE)
             }
             val result: UnificationResult = theta.copy()
-            val x1: T1 = (term1 as Atom<T1>).wrappedValue
-            val x2: T2 = (term2 as Atom<T2>).wrappedValue
+            @Suppress("UNCHECKED_CAST") val x1: T1 = (term1 as Atom<T1>).wrappedValue
+            @Suppress("UNCHECKED_CAST") val x2: T2 = (term2 as Atom<T2>).wrappedValue
             if (predicate(x1, x2)) {
                 return@label ItSingleton(result)
             } else {
@@ -108,7 +102,6 @@ fun <T1 : Any, T2 : Any> binaryPredicate(
 /**
  * Creates a native fact that represents a relation between two arguments and the result of a function.
  *
- * @param type     the type of the fact
  * @param module   the module of this native fact
  * @param name     the name of the relation
  * @param t1       the (Kotlin) type of the first sub-term (argument)
@@ -121,7 +114,6 @@ fun <T1 : Any, T2 : Any> binaryPredicate(
  * @return a native fact representing a binary function application
  */
 fun <T1 : Any, T2 : Any, R : Any> binaryOperator(
-    type: Type,
     module: String,
     name: String,
     t1: KClass<T1>,
@@ -131,14 +123,14 @@ fun <T1 : Any, T2 : Any, R : Any> binaryOperator(
     shortDescription: String = "",
     printInfixedForm: Boolean = true,
 ): NativeFact {
-    val x1Var: Variable = V("X1" type t1)
-    val x2Var: Variable = V("X2" type t2)
-    val rVar: Variable = V("R" type tr)
-    return object : NativeFact(type, module, name, list[x1Var, x2Var, rVar],
+    val x1Var = Variable("X1")
+    val x2Var = Variable("X2")
+    val rVar = Variable("R")
+    return object : NativeFact(module, name, list[x1Var, x2Var, rVar],
         label@{ self: NativeFact, theta: UnificationResult, other: Relation ->
             val tempTheta: UnificationResult = SimpleUnify.multiUnify(
                 theta.copy(),
-                StructImpl(type, self.toKotlinList()),
+                StructImpl(self.toKotlinList()),
                 other
             ).itFirst()
             if (tempTheta.isFailure) {
@@ -170,11 +162,11 @@ fun <T1 : Any, T2 : Any, R : Any> binaryOperator(
                 return@label ItSingleton(UnificationResult.FAILURE)
             }
             val result: UnificationResult = theta.copy()
-            val x1: T1 = (term1 as Atom<T1>).wrappedValue
-            val x2: T2 = (term2 as Atom<T2>).wrappedValue
+            @Suppress("UNCHECKED_CAST") val x1: T1 = (term1 as Atom<T1>).wrappedValue
+            @Suppress("UNCHECKED_CAST") val x2: T2 = (term2 as Atom<T2>).wrappedValue
             if (term3 !is Variable || tempTheta.substitution!!.contains(term3.name)) {
                 if (term3 is Atom<*> && tr.isInstance(term3.wrappedValue)) {
-                    val r: R = (term3 as Atom<R>).wrappedValue
+                    @Suppress("UNCHECKED_CAST") val r: R = (term3 as Atom<R>).wrappedValue
                     return@label if (r == function(x1, x2)) {
                         ItSingleton(result)
                     } else {
@@ -209,7 +201,6 @@ fun <T1 : Any, T2 : Any, R : Any> binaryOperator(
 /**
  * Creates a native fact that represents a relation between an argument and the result of a function.
  *
- * @param type     the type of the fact
  * @param module   the module of this native fact
  * @param name     the name of the relation
  * @param t        the (Kotlin) type of the first sub-term (argument)
@@ -220,7 +211,6 @@ fun <T1 : Any, T2 : Any, R : Any> binaryOperator(
  * @return a native fact representing a single-argument function application
 </R></T> */
 fun <T : Any, R : Any> unaryOperator(
-    type: Type,
     module: String,
     name: String,
     t: KClass<T>,
@@ -229,13 +219,13 @@ fun <T : Any, R : Any> unaryOperator(
     shortDescription: String = "",
     printPrefixedForm: Boolean = true,
 ): NativeFact {
-    val xVar: Variable = V("X" type t)
-    val rVar: Variable = V("R" type tr)
-    return object : NativeFact(type, module, name, list[xVar, rVar],
+    val xVar = Variable("X")
+    val rVar = Variable("R")
+    return object : NativeFact(module, name, list[xVar, rVar],
         label@{ self: NativeFact, theta: UnificationResult, other: Relation ->
             val tempTheta: UnificationResult = SimpleUnify.multiUnify(
                 theta.copy(),
-                StructImpl(type, self.toKotlinList()),
+                StructImpl(self.toKotlinList()),
                 other
             ).itFirst()
             if (tempTheta.isFailure) {
@@ -260,10 +250,10 @@ fun <T : Any, R : Any> unaryOperator(
                 return@label ItSingleton(UnificationResult.FAILURE)
             }
             val result: UnificationResult = theta.copy()
-            val x1: T = (term1 as Atom<T>).wrappedValue
+            @Suppress("UNCHECKED_CAST") val x1: T = (term1 as Atom<T>).wrappedValue
             if (term2 !is Variable || tempTheta.substitution!!.contains(term2.name)) {
                 if (term2 is Atom<*> && tr.isInstance(term2.wrappedValue)) {
-                    val r: R = (term2 as Atom<R>).wrappedValue
+                    @Suppress("UNCHECKED_CAST") val r: R = (term2 as Atom<R>).wrappedValue
                     return@label if ((r == function(x1))) {
                         ItSingleton(result)
                     } else {
@@ -298,7 +288,6 @@ fun <T : Any, R : Any> unaryOperator(
 /**
  * Creates a native fact that represents a relation between two arguments and the results of a "generator" function.
  *
- * @param type          the type of the fact
  * @param module        the module of this native fact
  * @param name          the name of the relation
  * @param t1            the (Kotlin) type of the first sub-term (argument)
@@ -311,7 +300,6 @@ fun <T : Any, R : Any> unaryOperator(
  * @return a native fact representing a binary function application
  */
 fun <T1 : Any, T2 : Any, R : Any> binaryGenerator(
-    type: Type,
     module: String,
     name: String,
     t1: KClass<T1>,
@@ -321,14 +309,14 @@ fun <T1 : Any, T2 : Any, R : Any> binaryGenerator(
     shortDescription: String = "",
     printInfixedForm: Boolean = true,
 ): NativeFact {
-    val x1Var: Variable = V("X1" type t1)
-    val x2Var: Variable = V("X2" type t2)
-    val rVar: Variable = V("R" type tr)
-    return object : NativeFact(type, module, name, list[x1Var, x2Var, rVar],
+    val x1Var = Variable("X1")
+    val x2Var = Variable("X2")
+    val rVar = Variable("R")
+    return object : NativeFact(module, name, list[x1Var, x2Var, rVar],
         label@{ self: NativeFact, theta: UnificationResult, other: Relation ->
             val tempTheta: UnificationResult = SimpleUnify.multiUnify(
                 theta.copy(),
-                StructImpl(type, self.toKotlinList()),
+                StructImpl(self.toKotlinList()),
                 other
             ).itFirst()
             if (tempTheta.isFailure) {
@@ -360,14 +348,14 @@ fun <T1 : Any, T2 : Any, R : Any> binaryGenerator(
                 return@label ItSingleton(UnificationResult.FAILURE)
             }
 
-            val x1: T1 = (term1 as Atom<T1>).wrappedValue
-            val x2: T2 = (term2 as Atom<T2>).wrappedValue
+            @Suppress("UNCHECKED_CAST") val x1: T1 = (term1 as Atom<T1>).wrappedValue
+            @Suppress("UNCHECKED_CAST") val x2: T2 = (term2 as Atom<T2>).wrappedValue
 
             val iterableOfResults = genFunction(x1, x2)
 
             if(term3 !is Variable || tempTheta.substitution!!.contains(term3.name)){
                 if(term3 is Atom<*> && tr.isInstance(term3.wrappedValue)){
-                    val r: R = (term3 as Atom<R>).wrappedValue
+                    @Suppress("UNCHECKED_CAST") val r: R = (term3 as Atom<R>).wrappedValue
                     return@label iterableOfResults
                         .itTakeWhile { it == r }
                         .itMap { theta.copy() }

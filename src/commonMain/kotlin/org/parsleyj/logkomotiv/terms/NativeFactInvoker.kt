@@ -1,6 +1,5 @@
 package org.parsleyj.logkomotiv.terms
 
-import org.parsleyj.logkomotiv.terms.types.Type
 import org.parsleyj.logkomotiv.unify.Substitution
 
 /**
@@ -13,11 +12,9 @@ import org.parsleyj.logkomotiv.unify.Substitution
  */
 class NativeFactInvoker(
     private val module: String,
-    type: Type,
     name: String,
     terms: List<Term>
 ) : RelationImpl(
-    type,
     name,
     terms
 ) {
@@ -32,6 +29,6 @@ class NativeFactInvoker(
         for (term in terms.subList(1, terms.size)) {
             newTerms.add(term.applySubstitution(subs))
         }
-        return NativeFactInvoker(module, type, name, newTerms)
+        return NativeFactInvoker(module, name, newTerms)
     }
 }

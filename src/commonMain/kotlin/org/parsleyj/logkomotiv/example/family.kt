@@ -30,62 +30,62 @@ fun familyExample(){
         fact["parent_of"(+"lily", +"harry")]
         fact["parent_of"(+"james", +"harry")]
 
-        rule["father_of"(V("X"), V("Y"))](
-            "male"(V("X")),
-            "parent_of"(V("X"), V("Y"))
+        rule["father_of"(v("X"), v("Y"))](
+            "male"(v("X")),
+            "parent_of"(v("X"), v("Y"))
         )
 
-        rule["mother_of"(V("X"), V("Y"))](
-            "female"(V("X")),
-            "parent_of"(V("X"), V("Y"))
+        rule["mother_of"(v("X"), v("Y"))](
+            "female"(v("X")),
+            "parent_of"(v("X"), v("Y"))
         )
 
-        rule["grandfather_of"(V("X"), V("Y"))](
-            "father_of"(V("X"), V("Z")),
-            "parent_of"(V("Z"), V("Y"))
+        rule["grandfather_of"(v("X"), v("Y"))](
+            "father_of"(v("X"), v("Z")),
+            "parent_of"(v("Z"), v("Y"))
         )
 
-        rule["grandmother_of"(V("X"), V("Y"))](
-            "mother_of"(V("X"), V("Z")),
-            "parent_of"(V("Z"), V("Y"))
+        rule["grandmother_of"(v("X"), v("Y"))](
+            "mother_of"(v("X"), v("Z")),
+            "parent_of"(v("Z"), v("Y"))
         )
 
-        rule["sister_of"(V("X"), V("Y"))](
-            "female"(V("X")),
-            "parent_of"(V("F"), V("X")),
-            "parent_of"(V("F"), V("Y")),
-            CommonLib["!="(V("X"), V("Y"))]
+        rule["sister_of"(v("X"), v("Y"))](
+            "female"(v("X")),
+            "parent_of"(v("F"), v("X")),
+            "parent_of"(v("F"), v("Y")),
+            CommonLib["!="(v("X"), v("Y"))]
         )
 
-        rule["brother_of"(V("X"), V("Y"))](
-            "male"(V("X")),
-            "parent_of"(V("F"), V("X")),
-            "parent_of"(V("F"), V("Y")),
-            CommonLib["!="(V("X"), V("Y"))]
+        rule["brother_of"(v("X"), v("Y"))](
+            "male"(v("X")),
+            "parent_of"(v("F"), v("X")),
+            "parent_of"(v("F"), v("Y")),
+            CommonLib["!="(v("X"), v("Y"))]
         )
 
-        rule["ancestor_of"(V("X"), V("Y"))](
-            "parent_of"(V("X"), V("Y"))
+        rule["ancestor_of"(v("X"), v("Y"))](
+            "parent_of"(v("X"), v("Y"))
         )
 
-        rule["ancestor_of"(V("X"), V("Y"))](
-            "parent_of"(V("X"), V("Z")),
-            "ancestor_of"(V("Z"), V("Y"))
+        rule["ancestor_of"(v("X"), v("Y"))](
+            "parent_of"(v("X"), v("Z")),
+            "ancestor_of"(v("Z"), v("Y"))
         )
     }
 
     println(knowledgeBase)
     println()
 
-    for ((parent, child) in knowledgeBase["parent_of"(V("P"), V("C"))].atoms2<String, String>()) {
+    for ((parent, child) in knowledgeBase["parent_of"(v("P"), v("C"))].atoms2<String, String>()) {
         println("$parent is parent of $child")
     }
 
-    for ((brother, x) in knowledgeBase["brother_of"(V("b"), V("x"))].atoms2<String, String>()) {
+    for ((brother, x) in knowledgeBase["brother_of"(v("b"), v("x"))].atoms2<String, String>()) {
         println("$brother is brother of $x")
     }
 
-    for ((sister, x) in knowledgeBase["sister_of"(V("b"), V("x"))].atoms2<String, String>()) {
+    for ((sister, x) in knowledgeBase["sister_of"(v("b"), v("x"))].atoms2<String, String>()) {
         println("$sister is sister of $x")
     }
 

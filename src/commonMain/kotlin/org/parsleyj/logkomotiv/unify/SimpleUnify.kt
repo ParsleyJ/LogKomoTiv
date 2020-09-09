@@ -91,7 +91,7 @@ object SimpleUnify {
         t: Term,
         theta: UnificationResult
     ): UnificationResult {
-        if (theta.isFailure || !`var`.type.isInstance(t)) {
+        if (theta.isFailure) {
             return UnificationResult.FAILURE
         }
         if (theta.substitution!!.contains(`var`.name)) {

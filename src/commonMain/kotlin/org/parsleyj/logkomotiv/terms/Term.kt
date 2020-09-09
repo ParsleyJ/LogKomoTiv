@@ -2,7 +2,6 @@ package org.parsleyj.logkomotiv.terms
 
 import org.parsleyj.kotutils.get
 import org.parsleyj.kotutils.list
-import org.parsleyj.logkomotiv.terms.types.Type
 import org.parsleyj.logkomotiv.unify.Substitution
 import org.parsleyj.logkomotiv.utils.Container
 import org.parsleyj.logkomotiv.utils.Uniquer
@@ -60,19 +59,13 @@ interface Term {
         return eq(term2)
     }
 
-    /**
-     * Returns the type - from the point of view of the reasoning engine - of this term
-     *
-     * @return the type of this term
-     */
-    val type: Type
 
     /**
      * Populates a map with names/types pairs of the variables in this term.
      *
-     * @param typesMap the names/types map of the variables in this term.
+     * @param varMap the names/types map of the variables in this term.
      */
-    fun populateVarTypes(typesMap: MutableMap<String, Type>)
+    fun populateVarMap(varMap: MutableMap<String, Variable>)
 
     fun kotlinify():Any = this
 

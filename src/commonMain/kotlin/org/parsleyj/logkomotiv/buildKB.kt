@@ -3,9 +3,6 @@ package org.parsleyj.logkomotiv
 import org.parsleyj.kotutils.empty
 import org.parsleyj.kotutils.list
 import org.parsleyj.logkomotiv.terms.*
-import org.parsleyj.logkomotiv.terms.types.Type.Companion.ANY
-import org.parsleyj.logkomotiv.terms.types.KotlinType
-import org.parsleyj.logkomotiv.terms.types.Type
 import org.parsleyj.logkomotiv.utils.Uniquer
 import kotlin.reflect.KClass
 
@@ -57,7 +54,7 @@ class KnowledgeBaseBuilder {
     @KBBuildersDSL
     infix fun Relation.from(lib: Pair<String, List<Term>>): NativeFactInvoker {
         importedLibs.getOrPut(lib.first) { lib.second }
-        return NativeFactInvoker(lib.first, ANY, this@from.name, this@from.rest().toKotlinList())
+        return NativeFactInvoker(lib.first, this@from.name, this@from.rest().toKotlinList())
     }
 
     @KBBuildersDSL
@@ -75,30 +72,13 @@ class KnowledgeBaseBuilder {
 }
 
 @KBBuildersDSL
-infix fun String.type(t: Type): Pair<String, Type> {
-    return Pair(this, t)
-}
-
-@KBBuildersDSL
 infix fun Relation.from(lib: Pair<String, List<Term>>): NativeFactInvoker {
-    return NativeFactInvoker(lib.first, ANY, this@from.name, this@from.rest().toKotlinList())
+    return NativeFactInvoker(lib.first, this@from.name, this@from.rest().toKotlinList())
 }
 
-@KBBuildersDSL
-infix fun String.type(t: KClass<*>): Pair<String, Type> {
-    return Pair(this, KotlinType(t))
-}
-
-operator fun String.div(t: KClass<*>): Variable {
-    return Variable(KotlinType(t), this)
-}
-
-operator fun String.div(t: Type): Variable {
-    return Variable(t, this)
-}
 
 operator fun String.invoke(vararg terms: Term): Relation {
-    return RelationImpl(ANY, this, listOf(*terms))
+    return RelationImpl(this, listOf(*terms))
 }
 
 operator fun String.unaryPlus(): Atom<String> {
@@ -107,33 +87,13 @@ operator fun String.unaryPlus(): Atom<String> {
 
 
 @KBBuildersDSL
-fun V(name: String): Variable {
+fun v(name: String): Variable {
     return Variable(name)
 }
 
 @KBBuildersDSL
-fun V(typed: Pair<String, Type>): Variable {
-    return Variable(typed.second, typed.first)
-}
-
-@KBBuildersDSL
-fun V(name: String, type: Type): Variable {
-    return Variable(type, name)
-}
-
-@KBBuildersDSL
-fun V(name: String, type: KClass<*>): Variable {
-    return Variable(KotlinType(type), name)
-}
-
-@KBBuildersDSL
-inline fun <reified T : Any> v(name: String): Variable {
-    return Variable(KotlinType(T::class), name)
-}
-
-@KBBuildersDSL
-fun V(): Variable {
-    return Variable(ANY, placeHolderNameGenerator.next())
+fun v(): Variable {
+    return Variable(placeHolderNameGenerator.next())
 }
 
 @KBBuildersDSL
@@ -149,7 +109,7 @@ fun knowledgeBase(block: KnowledgeBaseBuilder.() -> Unit): KnowledgeBase {
 }
 
 fun invokeNative(module: String, name: String, vararg terms: Term): NativeFactInvoker {
-    return NativeFactInvoker(module, ANY, name, listOf(*terms))
+    return NativeFactInvoker(module, name, listOf(*terms))
 }
 
 

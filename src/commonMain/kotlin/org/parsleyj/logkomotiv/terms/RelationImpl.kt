@@ -4,20 +4,14 @@ import org.parsleyj.kotutils.empty
 import org.parsleyj.kotutils.get
 import org.parsleyj.kotutils.list
 import org.parsleyj.logkomotiv.terms.Relation.Companion.RELATION_DIR
-import org.parsleyj.logkomotiv.terms.types.Type
 import org.parsleyj.logkomotiv.unify.Substitution
 
 /**
  * Relation standard implementation.
  */
 open class RelationImpl(
-    type: Type,
     override val name: String, terms: List<Term>
-) : StructImpl(
-    type, prependNameToListOfTerms(
-        name, terms
-    )
-), Relation {
+) : StructImpl(prependNameToListOfTerms(name, terms)), Relation {
 
     override fun directoryPath(): List<String> {
         return Struct.mutListAppend(Struct.mutListAppend(
@@ -28,7 +22,7 @@ open class RelationImpl(
     /**
      * Creates a relation with specified type and name
      */
-    constructor(type: Type, name: String) : this(type, name, list.empty<Term>())
+    constructor(name: String) : this(name, list.empty<Term>())
 
     override fun applySubstitution(subs: Substitution): RelationImpl {
         val newTerms: MutableList<Term> = mutableListOf()
@@ -36,7 +30,7 @@ open class RelationImpl(
         for (term in terms.subList(1, terms.size)) {
             newTerms.add(term.applySubstitution(subs))
         }
-        return RelationImpl(type, name, newTerms)
+        return RelationImpl(name, newTerms)
     }
 
     override fun justARenaming(term2: Term): Boolean {

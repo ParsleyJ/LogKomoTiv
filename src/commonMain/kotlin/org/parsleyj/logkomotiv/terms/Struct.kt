@@ -1,6 +1,5 @@
 package org.parsleyj.logkomotiv.terms
 
-import org.parsleyj.logkomotiv.terms.types.Type
 import org.parsleyj.logkomotiv.utils.Container
 import org.parsleyj.logkomotiv.utils.Uniquer
 
@@ -55,9 +54,9 @@ interface Struct : Term {
         }
     }
 
-    override fun populateVarTypes(typesMap: MutableMap<String, Type>) {
+    override fun populateVarMap(varMap: MutableMap<String, Variable>) {
         for (term in toKotlinList()) {
-            term.populateVarTypes(typesMap)
+            term.populateVarMap(varMap)
         }
     }
 

@@ -15,7 +15,7 @@ LogKomoTiv is a DSL library: it exploits the mechanisms provided by Kotlin to de
 ```kotlin
 // Let's create a simple knowledge base.
 // We can create atoms using the 'a()' function
-// We can create variables using the generic 'v<Type>("name")' function.
+// We can create variables using the generic 'v("name")' function.
 // We can also query native libraries (or other knowledge bases) by using the [] operator.
 val myKB = knowledgeBase {
     // base case: factorial of 0 is 1.
